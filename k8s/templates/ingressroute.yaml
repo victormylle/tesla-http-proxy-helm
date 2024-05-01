@@ -14,6 +14,7 @@ spec:
       port: 4430
   tls:
     secretName: {{ .Values.ingress.secretName }}
+    passthrough: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
