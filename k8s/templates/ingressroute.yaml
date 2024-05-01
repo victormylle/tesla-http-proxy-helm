@@ -12,7 +12,6 @@ spec:
     - name: tesla-http-proxy-tesla-http-proxy-helm
       port: 4430
   tls:
-    secretName: {{ .Values.ingress.secretName }}
     passthrough: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
