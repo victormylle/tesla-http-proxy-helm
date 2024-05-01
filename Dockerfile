@@ -28,6 +28,8 @@ RUN mkdir /data /share
 # Copy project files into required locations
 COPY tesla_http_proxy/app /app
 
+RUN chmod +x /app/run.sh
+
 # Copy tesla-http-proxy binary from build stage
 COPY --from=build /app/bin/tesla-http-proxy /app/bin/tesla-keygen /usr/bin/
 
