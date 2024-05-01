@@ -42,7 +42,7 @@ if ! pass >/dev/null 2>&1; then
   generate_tesla_keypair
 
 # verify certificate exists
-elif [ ! -f /share/nginx/com.tesla.3p.public-key.pem ]; then
+elif [ ! -f /data/keypair/com.tesla.3p.public-key.pem ]; then
   echo "Public key com.tesla.3p.public-key.pem missing from /share"
   generate_tesla_keypair
 fi

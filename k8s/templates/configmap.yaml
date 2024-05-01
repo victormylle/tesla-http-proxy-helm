@@ -4,24 +4,26 @@ metadata:
   name: {{ include "tesla-http-proxy-helm.fullname" . }}-nginx
 data:
   nginx.conf: |
-    server {
-        listen       80;
-        server_name  localhost;
+    http {
+        server {
+            listen       80;
+            server_name  localhost;
 
-        location / {
-            root /data/keypair;
-            try_files /com.tesla.3p.public-key.pem =404;
-        }
+            location / {
+                root /data/keypair;
+                try_files /com.tesla.3p.public-key.pem =404;
+            }
 
-        error_page  404 /404.html;
-        location = /404.html {
-            root   /usr/share/nginx/html;
-            internal;
-        }
+            error_page  404 /404.html;
+            location = /404.html {
+                root   /usr/share/nginx/html;
+                internal;
+            }
 
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-            internal;
+            error_page   500 502 503 504  /50x.html;
+            location = /50x.html {
+                root   /usr/share/nginx/html;
+                internal;
+            }
         }
     }
