@@ -1,0 +1,31 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "tesla-http-proxy-helm.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: {{ include "tesla-http-proxy-helm.fullname" . }}
+      port: 4430  # The port that the service listens on
+  tls:
+    secretName: {{ .Values.ingress.secretName }}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "tesla-http-proxy-helm.fullname" . }}-8099
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`api.{{ .Values.ingress.host }}`) && PathPrefix(`/`)
+    kind: Rule
+    port: 8099  # The port that the service listens on
+  tls:
+    secretName: {{ .Values.ingress.secretName }}
