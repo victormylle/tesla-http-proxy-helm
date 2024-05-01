@@ -6,7 +6,7 @@ metadata:
 spec:
   type: ClusterIP  # You can change the service type as needed (ClusterIP, NodePort, LoadBalancer)
   ports:
-    - port: 443  # The port that the service listens on
+    - port: 4430  # The port that the service listens on
       targetPort: 443  # The port your application listens on
       protocol: TCP
       name: http
