@@ -18,6 +18,23 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
+  name: {{ include "tesla-http-proxy-helm.fullname" . }}-nginx
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/.well-known/appspecific/com.tesla.3p.public-key.pem`)
+    kind: Rule
+    services:
+    - name: {{ include "tesla-http-proxy-helm.fullname" . }}-nginx
+      port: 80
+  tls:
+    secretName: {{ .Values.ingress.secretName }}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
   name: {{ include "tesla-http-proxy-helm.fullname" . }}-8099
   namespace: {{ .Release.Namespace }}
 spec:

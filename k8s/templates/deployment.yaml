@@ -38,8 +38,31 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
-      imagePullSecrets: {{ toYaml .Values.image.pullSecrets | nindent 8 }}
+
+        - name: nginx
+          image: "nginx:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: data
+              mountPath: "/data"
+          volumeMounts:
+            - name: nginx-config
+              mountPath: "/etc/nginx/nginx.conf"
+              subPath: nginx.conf
+            - name: data
+              mountPath: "/data"
+
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: {{ include "tesla-http-proxy-helm.fullname" . }}
+        - name: nginx-config
+          configMap:
+            name: {{ include "tesla-http-proxy-helm.fullname" . }}-nginx
+
+      imagePullSecrets:
+        {{- if .Values.image.pullSecrets }}
+        {{ toYaml .Values.image.pullSecrets | nindent 8 }}
+        {{- end }}

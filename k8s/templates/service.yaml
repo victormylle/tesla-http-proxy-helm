@@ -16,3 +16,18 @@ spec:
       name: http-8099
   selector:
       {{- include "tesla-http-proxy-helm.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tesla-http-proxy-helm.fullname" . }}-nginx
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP  # Change as needed
+  ports:
+    - port: 80  # External port
+      targetPort: 80  # Container port
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "tesla-http-proxy-helm.selectorLabels" . | nindent 4 }}
