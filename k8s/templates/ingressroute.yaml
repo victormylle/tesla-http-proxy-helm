@@ -26,6 +26,8 @@ spec:
   routes:
   - match: Host(`api-{{ .Values.ingress.host }}`) && PathPrefix(`/`)
     kind: Rule
-    port: 8099  # The port that the service listens on
+    services:
+    - name: {{ include "tesla-http-proxy-helm.fullname" . }}
+      port: 8099  # The port that the service listens on
   tls:
     secretName: {{ .Values.ingress.secretName }}
