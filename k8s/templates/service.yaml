@@ -9,10 +9,10 @@ spec:
     - port: 4430  # The port that the service listens on
       targetPort: 443  # The port your application listens on
       protocol: TCP
-      name: http
+      name: http-4430
     - port: 8099  # The port that the service listens on
       targetPort: 8099  # The port your application listens on
       protocol: TCP
-      name: http
+      name: http-8099
   selector:
       {{- include "tesla-http-proxy-helm.selectorLabels" . | nindent 4 }}
