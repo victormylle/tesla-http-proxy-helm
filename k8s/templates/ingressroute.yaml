@@ -24,7 +24,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`api.{{ .Values.ingress.host }}`) && PathPrefix(`/`)
+  - match: Host(`api-{{ .Values.ingress.host }}`) && PathPrefix(`/`)
     kind: Rule
     port: 8099  # The port that the service listens on
   tls:
