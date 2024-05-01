@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: registry.kube.optimize/tesla-http-proxy
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - name: regcred
+
+nameOverride: ""
+fullnameOverride: ""
+
+ingress:
+  host: example.com
+  secretName: secret
+
+config:
+  client_id: ""
+  client_secret: ""
+  domain: ""
+  proxy_host: ""
+  region: ""
+  options_complete: 0
+
+persistence:
+  enabled: false
+  storage: 1Gi
+  storageClass: ""

@@ -21,23 +21,24 @@ echo REGION=$REGION
 generate_ssl_certs() {
   # generate self signed SSL certificate
   echo "Generating self-signed SSL certificate"
+  mkdir -p /data/certs
   openssl req -x509 -nodes -newkey ec \
     -pkeyopt ec_paramgen_curve:secp521r1 \
     -pkeyopt ec_param_enc:named_curve \
     -subj "/CN=${PROXY_HOST}" \
-    -keyout /data/key.pem -out /data/cert.pem -sha256 -days 3650 \
+    -keyout /data/certs/key.pem -out /data/certs/cert.pem -sha256 -days 3650 \
     -addext "extendedKeyUsage = serverAuth" \
     -addext "keyUsage = digitalSignature, keyCertSign, keyAgreement"
-  mkdir -p /share/home-assistant
-  cp /data/cert.pem /share/home-assistant/selfsigned.pem
+  # mkdir -p /share/home-assistant
+  # cp /data/cert.pem /share/home-assistant/selfsigned.pem
 }
 
 generate_tesla_keypair() {
   # Generate keypair
   echo "Generating keypair"
-  mkdir -p /share/nginx
-  tesla-keygen -f -keyring-type pass -key-name myself create >/share/nginx/com.tesla.3p.public-key.pem
-  cat /share/nginx/com.tesla.3p.public-key.pem
+  mkdir -p /data/keypair
+  tesla-keygen -f -keyring-type pass -key-name myself create >/data/keypair/com.tesla.3p.public-key.pem
+  cat /data/keypair/com.tesla.3p.public-key.pem
 }
 
 # run on first launch only
@@ -56,9 +57,9 @@ elif [ ! -f /share/nginx/com.tesla.3p.public-key.pem ]; then
   generate_tesla_keypair
 fi
 
-if [ -f /share/home-assistant/selfsigned.pem ] && [ -f /data/key.pem ]; then
-  certPubKey="$(openssl x509 -noout -pubkey -in /share/home-assistant/selfsigned.pem)"
-  keyPubKey="$(openssl pkey -pubout -in /data/key.pem)"
+if [ -f /data/certs/cert.pem ] && [ -f /data/certs/key.pem ]; then
+  certPubKey="$(openssl x509 -noout -pubkey -in /data/certs/cert.pem)"
+  keyPubKey="$(openssl pkey -pubout -in /data/certs/key.pem)"
   if [ "${certPubKey}" == "${keyPubKey}" ]; then
     echo "Found existing keypair"
   else
@@ -76,4 +77,4 @@ if ! [ -f /data/access_token ]; then
 fi
 
 echo "Starting Tesla HTTP Proxy"
-tesla-http-proxy -keyring-debug -keyring-type pass -key-name myself -cert /data/cert.pem -tls-key /data/key.pem -port 443 -host 0.0.0.0 -verbose
+tesla-http-proxy -keyring-debug -keyring-type pass -key-name myself -cert /data/certs/cert.pem -tls-key /data/certs/key.pem -port 443 -host 0.0.0.0 -verbose

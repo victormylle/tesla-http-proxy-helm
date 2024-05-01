@@ -1,0 +1,13 @@
+{{- if .Values.persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "tesla-http-proxy-helm.fullname" . }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storage }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+{{- end }}

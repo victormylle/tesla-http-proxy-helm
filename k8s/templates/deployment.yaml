@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tesla-http-proxy-helm.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "tesla-http-proxy-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "tesla-http-proxy-helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TZ
+              value: "Europe/Brussels"
+            - name: CLIENT_ID
+              value: "{{ .Values.config.client_id }}"
+            - name: CLIENT_SECRET
+              value: "{{ .Values.config.client_secret }}"
+            - name: DOMAIN
+              value: "{{ .Values.config.domain }}"
+            - name: PROXY_HOST
+              value: "{{ .Values.config.proxy_host }}"
+            - name: REGION
+              value: "{{ .Values.config.region }}"
+            - name: OPTIONS_COMPLETE
+              value: "{{ .Values.config.options_complete }}"
+            {{- with .Values.env }}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      imagePullSecrets: {{ toYaml .Values.image.pullSecrets | nindent 8 }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "tesla-http-proxy-helm.fullname" . }}

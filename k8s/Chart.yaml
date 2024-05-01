@@ -1,0 +1,4 @@
+apiVersion: v2
+name: tesla-http-proxy-helm
+description: A Helm chart for deploying the Tesla HTTP Proxy container
+version: 1.0.0
