@@ -12,6 +12,7 @@ spec:
     services:
     - name: tesla-http-proxy-tesla-http-proxy-helm
       port: 4430
+      scheme: https
   tls:
     secretName: {{ .Values.ingress.secretName }}
 ---
