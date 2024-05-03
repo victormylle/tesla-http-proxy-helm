@@ -7,7 +7,7 @@ spec:
   entryPoints:
   - websecure # maps to port 443 by default
   routes:
-  - match: HostSNI(`{{ .Values.ingress.host }}`)
+  - match: HostSNI(`*`)
     services:
     - name: tesla-http-proxy-tesla-http-proxy-helm
       port: 4430
