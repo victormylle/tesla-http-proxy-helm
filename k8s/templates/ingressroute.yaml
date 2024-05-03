@@ -40,7 +40,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`api-{{ .Values.ingress.host }}`) && PathPrefix(`/`)
+  - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/`)
     kind: Rule
     services:
     - name: tesla-http-proxy-tesla-http-proxy-helm
