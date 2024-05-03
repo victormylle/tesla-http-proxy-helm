@@ -1,18 +1,29 @@
 apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRouteTCP
+kind: ServersTransport
+metadata:
+  name: insecure-servers-transport
+  namespace: {{ .Release.Namespace }}
+spec:
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: {{ include "tesla-http-proxy-helm.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   entryPoints:
-  - tesla-proxy # maps to port 443 by default
+    - websecure
   routes:
-  - match: HostSNI(`*`)
+  - match: Host(`api-{{ .Values.ingress.host }}`) && PathPrefix(`/`)
+    kind: Rule
     services:
     - name: tesla-http-proxy-tesla-http-proxy-helm
       port: 4430
+      scheme: https
+      serversTransport: insecure-servers-transport
   tls:
-    passthrough: true
+    secretName: {{ .Values.ingress.secretName }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
